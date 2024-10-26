@@ -105,7 +105,7 @@ export function TaskItem({ task, onUpdate, onDelete, onSelect }: TaskItemProps) 
                                                 subtasks: task.subtasks.filter(t => t.id !== id),
                                             })
                                         }
-                                        onSelect={(subtask) => {}}
+                                        onSelect={(subtask) => onSelect(subtask)}
                                     />
                                 </div>
                             ))}
