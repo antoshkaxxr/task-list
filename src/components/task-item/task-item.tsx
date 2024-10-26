@@ -3,13 +3,22 @@ import { generateId } from "../../helper-functions/helper-functions";
 import { Modal } from "../modal/modal";
 import './task-item-styles.scss';
 
-export function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
+export function TaskItem({ task, onUpdate, onDelete, onSelect }: TaskItemProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
 
-    const handleCheckboxChange = () => {
-        const updatedTask = { ...task, completed: !task.completed };
+    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const completed = event.target.checked;
+
+        const updatedTask = {
+            ...task,
+            completed,
+            subtasks: task.subtasks.map(subtask => ({
+                ...subtask,
+                completed,
+            })),
+        };
         onUpdate(updatedTask);
     };
 
@@ -36,7 +45,7 @@ export function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
 
     const handleAddSubtask = () => {
         task.expanded = true;
-        const newSubtask: Task = {
+        const newSubtask = {
             id: generateId(),
             title: "New Subtask",
             description: "",
@@ -49,9 +58,15 @@ export function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
     };
 
     return (
-        <div className="task-item">
+        <div className={`task-item ${task.completed ? 'completed' : ''}`} onClick={() => onSelect(task)}>
             <div className="task-header">
-                <input type="checkbox" checked={task.completed} onChange={handleCheckboxChange} />
+                <input
+                    type="checkbox"
+                    checked={task.subtasks.length > 0 ?
+                        task.subtasks.every(subtask => subtask.completed) :
+                        task.completed}
+                    onChange={handleCheckboxChange}
+                />
                 <div onClick={handleExpand} className="expand-button">
                     {task.expanded ? "▼" : "▶"} {task.title}
                 </div>
@@ -60,10 +75,10 @@ export function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
                         <img src="/icons/icon-edit.svg" alt="Редактировать" />
                     </button>
                     <button onClick={handleDelete}>
-                        <img src="/icons/icon-delete.svg" alt="Удалить"/>
+                        <img src="/icons/icon-delete.svg" alt="Удалить" />
                     </button>
                     <button onClick={handleAddSubtask}>
-                        <img src="/icons/icon-add.svg" alt="Добавить подзадачу"/>
+                        <img src="/icons/icon-add.svg" alt="Добавить подзадачу" />
                     </button>
                 </div>
             </div>
@@ -72,22 +87,27 @@ export function TaskItem({ task, onUpdate, onDelete }: TaskItemProps) {
                     {task.subtasks && task.subtasks.length > 0 && (
                         <div className="subtasks">
                             {task.subtasks.map((subtask) => (
-                                <TaskItem
-                                    key={subtask.id}
-                                    task={subtask}
-                                    onUpdate={(updatedSubtask) =>
-                                        onUpdate({
-                                            ...task,
-                                            subtasks: task.subtasks.map(t => t.id === updatedSubtask.id ? updatedSubtask : t)
-                                        })
-                                    }
-                                    onDelete={(id) =>
-                                        onUpdate({
-                                            ...task,
-                                            subtasks: task.subtasks.filter(t => t.id !== id)
-                                        })
-                                    }
-                                />
+                                <div onClick={(event) => {
+                                    event.stopPropagation();
+                                    onSelect(subtask);
+                                }} key={subtask.id}>
+                                    <TaskItem
+                                        task={subtask}
+                                        onUpdate={(updatedSubtask) =>
+                                            onUpdate({
+                                                ...task,
+                                                subtasks: task.subtasks.map(t => t.id === updatedSubtask.id ? updatedSubtask : t),
+                                            })
+                                        }
+                                        onDelete={(id) =>
+                                            onUpdate({
+                                                ...task,
+                                                subtasks: task.subtasks.filter(t => t.id !== id),
+                                            })
+                                        }
+                                        onSelect={(subtask) => {}}
+                                    />
+                                </div>
                             ))}
                         </div>
                     )}

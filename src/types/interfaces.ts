@@ -11,5 +11,6 @@ interface TaskItemProps {
     task: Task;
     onUpdate: (task: Task) => void;
     onDelete: (id: string) => void;
+    onSelect: (task: Task) => void;
 }
 

@@ -9,6 +9,26 @@ h3 {
     margin-left: 15px;
 }
 
+.main-page {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.task-list {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.task-details {
+  flex: 0 0 300px;
+  background-color: #d8d5d5;
+}
+
+.task-details h2, .task-details p {
+  margin-left: 10px;
+}
+
 .add-task-button {
    background-color: #007bff;
    color: white;
