@@ -2,8 +2,9 @@ import React, {useState} from "react";
 import { generateId } from "../../helper-functions/helper-functions";
 import { Modal } from "../modal/modal";
 import './task-item-styles.scss';
+import { observer } from "mobx-react-lite"
 
-export function TaskItem({ task, onUpdate, onDelete, onSelect }: TaskItemProps) {
+export const TaskItem = observer(({ task, onUpdate, onDelete, onSelect }: TaskItemProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
@@ -130,4 +131,4 @@ export function TaskItem({ task, onUpdate, onDelete, onSelect }: TaskItemProps) 
             />
         </div>
     );
-}
+});
