@@ -1,12 +1,41 @@
 h1 {
     font-size: 2rem;
-    color: #333;
-    margin-bottom: 20px;
     margin-left: 15px;
 }
 
 h3 {
     margin-left: 15px;
+}
+
+.theme-switcher {
+  margin-left: 10px;
+
+  button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #45a049;
+    }
+
+    &.dark-theme {
+      background-color: #555;
+    }
+
+    &.dark-theme:hover {
+      background-color: #777;
+    }
+  }
 }
 
 .main-page {
@@ -22,7 +51,7 @@ h3 {
 
 .task-details {
   flex: 0 0 300px;
-  background-color: #d8d5d5;
+  background-color: #7a7777;
 }
 
 .task-details h2, .task-details p {
@@ -40,7 +69,7 @@ h3 {
    margin-left: 15px;
    margin-top: 10px;
    display: block;
-   width: 100px;
+   width: 200px;
    transition: background-color 0.3s;
 
    &:hover {

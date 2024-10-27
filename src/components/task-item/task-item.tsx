@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import { generateId } from "../../helper-functions/helper-functions";
 import { Modal } from "../modal/modal";
 import './task-item-styles.scss';
@@ -11,14 +11,20 @@ export function TaskItem({ task, onUpdate, onDelete, onSelect }: TaskItemProps) 
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const completed = event.target.checked;
 
+        const updateSubtasksCompletion = (subtasks: Task[], completed: boolean): Task[] => {
+            return subtasks.map(subtask => ({
+                ...subtask,
+                completed,
+                subtasks: updateSubtasksCompletion(subtask.subtasks, completed),
+            }));
+        };
+
         const updatedTask = {
             ...task,
             completed,
-            subtasks: task.subtasks.map(subtask => ({
-                ...subtask,
-                completed,
-            })),
+            subtasks: updateSubtasksCompletion(task.subtasks, completed),
         };
+
         onUpdate(updatedTask);
     };
 
@@ -44,7 +50,6 @@ export function TaskItem({ task, onUpdate, onDelete, onSelect }: TaskItemProps) 
     };
 
     const handleAddSubtask = () => {
-        task.expanded = true;
         const newSubtask = {
             id: generateId(),
             title: "New Subtask",
@@ -52,8 +57,9 @@ export function TaskItem({ task, onUpdate, onDelete, onSelect }: TaskItemProps) 
             subtasks: [],
             completed: false,
             expanded: false,
+            parentTask: task
         };
-        const updatedTask = { ...task, subtasks: [...task.subtasks, newSubtask] };
+        const updatedTask = { ...task, expanded: true, subtasks: [...task.subtasks, newSubtask] };
         onUpdate(updatedTask);
     };
 
