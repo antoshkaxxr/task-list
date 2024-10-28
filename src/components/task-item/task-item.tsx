@@ -79,13 +79,13 @@ export const TaskItem = observer(({ task, onUpdate, onDelete, onSelect }: TaskIt
                 </div>
                 <div className="task-buttons">
                     <button onClick={handleEdit}>
-                        <img src="/icons/icon-edit.svg" alt="Редактировать" />
+                        <img src={`https://antoshkaxxr.github.io/task-list/icons/icon-edit.svg`} alt="Редактировать" />
                     </button>
                     <button onClick={handleDelete}>
-                        <img src="/icons/icon-delete.svg" alt="Удалить" />
+                        <img src={`https://antoshkaxxr.github.io/task-list/icons/icon-delete.svg`} alt="Удалить" />
                     </button>
                     <button onClick={handleAddSubtask}>
-                        <img src="/icons/icon-add.svg" alt="Добавить подзадачу" />
+                        <img src={`https://antoshkaxxr.github.io/task-list/icons/icon-add.svg`} alt="Добавить подзадачу" />
                     </button>
                 </div>
             </div>
