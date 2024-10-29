@@ -5,6 +5,7 @@ interface Task {
     subtasks: Task[];
     completed: boolean;
     expanded: boolean;
+    parentTask?: Task;
 }
 
 interface TaskItemProps {

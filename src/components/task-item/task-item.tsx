@@ -1,29 +1,62 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { generateId } from "../../helper-functions/helper-functions";
 import { Modal } from "../modal/modal";
 import './task-item-styles.scss';
 import { observer } from "mobx-react-lite"
+
+const areAllSubtasksCompleted = (task: Task): boolean => {
+    if (task.subtasks.length === 0) {
+        return task.completed;
+    }
+
+    for (let subtask of task.subtasks) {
+        if (!subtask.completed) {
+            return false;
+        }
+    }
+
+    return true;
+};
+
 
 export const TaskItem = observer(({ task, onUpdate, onDelete, onSelect }: TaskItemProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [title, setTitle] = useState(task.title);
     const [description, setDescription] = useState(task.description);
 
+    useEffect(() => {
+        if (task.completed && !areAllSubtasksCompleted(task)) {
+            const updatedTask = {
+                ...task,
+                completed: false
+            }
+            onUpdate(updatedTask);
+        }
+
+        if (!task.completed && areAllSubtasksCompleted(task)) {
+            const updatedTask = {
+                ...task,
+                completed: true
+            };
+            onUpdate(updatedTask);
+        }
+    }, [task.subtasks]);
+
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const completed = event.target.checked;
 
-        const updateSubtasksCompletion = (subtasks: Task[], completed: boolean): Task[] => {
+        const updateSubtaskCompletion = (subtasks: Task[], completed: boolean): Task[] => {
             return subtasks.map(subtask => ({
                 ...subtask,
                 completed,
-                subtasks: updateSubtasksCompletion(subtask.subtasks, completed),
+                subtasks: updateSubtaskCompletion(subtask.subtasks, completed),
             }));
         };
 
-        const updatedTask = {
+        const updatedTask: Task = {
             ...task,
             completed,
-            subtasks: updateSubtasksCompletion(task.subtasks, completed),
+            subtasks: updateSubtaskCompletion(task.subtasks, completed),
         };
 
         onUpdate(updatedTask);
@@ -69,9 +102,7 @@ export const TaskItem = observer(({ task, onUpdate, onDelete, onSelect }: TaskIt
             <div className="task-header">
                 <input
                     type="checkbox"
-                    checked={task.subtasks.length > 0 ?
-                        task.subtasks.every(subtask => subtask.completed) :
-                        task.completed}
+                    checked={areAllSubtasksCompleted(task)}
                     onChange={handleCheckboxChange}
                 />
                 <div onClick={handleExpand} className="expand-button">
